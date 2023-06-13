@@ -1,0 +1,76 @@
+const MongoClient = require('mongodb').MongoClient;
+
+const url = 'mongodb+srv://aza:mongoodb@cluster0.afiwueu.mongodb.net/?retryWrites=true&w=majority';
+
+// Database Name
+const dbName = 'usr';
+
+// Read records
+const readRecords = async () => {
+    const collectionName = 'user1'; // Replace with your collection name
+  
+    const client = new MongoClient(url);
+  
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const collection = db.collection(collectionName);
+  
+      const result = await collection.find({}).toArray();
+  
+      console.log('Collection:', collectionName);
+      console.log('Documents:');
+      result.forEach(document => {
+        console.log(document);
+      });
+    } catch (err) {
+      console.error('Error displaying data:', err);
+    } finally {
+      client.close();
+    }
+  };
+
+const main = async () => {
+    await readRecords();
+};
+
+main().catch(console.error);
+////////////////////
+
+app.post('/your-route', async (req, res) => {
+  try {
+    const foundDocuments = await collection.find({"age": { $eq: req.body.age }}).toArray();
+
+    if (foundDocuments.length > 0) {
+      // Call a function or pass the foundDocuments as an argument
+      yourFunction(foundDocuments);
+    } else {
+      // No documents found
+    }
+
+    // Send a response if needed
+    res.status(200).json({ success: true });
+  } catch (error) {
+    // Handle any errors that occurred during the process
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+async function verification() {
+  const collectionName = 'user1';
+  const client = new MongoClient(url);
+
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+    const result = await collection.find({}).toArray();
+    return result;
+  } catch (err) {
+    console.error('Error displaying data:', err);
+  } finally {
+    client.close();
+  }
+}
