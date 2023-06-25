@@ -1,0 +1,84 @@
+POST http://localhost:3000/register-staff
+Content-Type: application/json
+
+{
+  "username": "fadh",
+  "password": "123" 
+}
+// staff registration
+
+###
+
+POST http://localhost:3000/register-security
+Content-Type: application/json
+
+{
+  "username": "bob",
+  "password": "123" 
+}
+// security registration
+
+###
+
+POST http://localhost:3000/login-staff
+Content-Type: application/json
+
+{
+  "username": "fadh",
+  "password": "123" 
+}
+// staff login
+
+###
+
+POST http://localhost:3000/login-security
+Content-Type: application/json
+
+{
+  "username": "bob",
+  "password": "123" 
+}
+// security login
+
+###
+
+POST http://localhost:3000/appointments
+Content-Type: application/json
+
+{
+  "name": "yat",
+  "company": "ABC Corporation",
+  "purpose": "meeting",
+  "phoneNo": "011223344",
+  "date": "26-6-2023",
+  "time": "12:00AM",
+  "verification": "N/A",
+  "staff": {
+    "username": "fadh"
+  }
+}
+
+###
+
+GET http://localhost:3000/staff-appointments/fadh
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhZGgiLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc2ODQ5NjZ9.y1GAKcTRnc5yGrRQ23iIxoOlbxBSfNbLxf7uNfNhgME
+
+###
+
+PUT http://localhost:3000/appointments/yat
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhZGgiLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc2ODM0ODZ9.7jj0kZj7ALf6X0IK-vTYqOr8BXRM5BgN5MESSKw_xkQ
+Content-Type: application/json
+
+{ "verification": "verified" }
+
+###
+
+DELETE http://localhost:3000/appointments/yat
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhZGgiLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc2ODM1NDh9.XkbTmIIEl9YSoZfuEJJCuhwDln_PU9pLrOktBOdVsok
+
+####
+
+GET http://localhost:3000/appointments?name=wanzu
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYiIsInJvbGUiOiJzZWN1cml0eSIsImlhdCI6MTY4NzY4MzY5M30.nQT6xkT3gUoFpxjSEYTaX0Bti_sX1TKaXZuuFvOvSi4
+
+//optional
