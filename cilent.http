@@ -3,7 +3,7 @@ POST http://localhost:3000/register-staff
 Content-Type: application/json
 
 {
-  "username": "fadh",
+  "username": "john",
   "password": "123" 
 }
 // staff registration
@@ -25,7 +25,7 @@ POST http://localhost:3000/login-staff
 Content-Type: application/json
 
 {
-  "username": "fadh",
+  "username": "john",
   "password": "123" 
 }
 // staff login
@@ -61,13 +61,13 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/staff-appointments/fadh
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhZGgiLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc2ODQ5NjZ9.y1GAKcTRnc5yGrRQ23iIxoOlbxBSfNbLxf7uNfNhgME
+GET http://localhost:3000/staff-appointments/john
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4iLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc5MTQyODZ9.jqXsNFhC0-K_KN-4b-mVWGe7OVqHnpC85ROW2VUh760
 
 ###
 
-PUT http://localhost:3000/appointments/yat
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhZGgiLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc2ODM0ODZ9.7jj0kZj7ALf6X0IK-vTYqOr8BXRM5BgN5MESSKw_xkQ
+PUT http://localhost:3000/appointments/wanzu
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhZGgiLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc3NjA1OTV9.AAn7xA2QUVWQYHN0Plf5ohcOcHP1Bg4xZHHg7sCyWww
 Content-Type: application/json
 
 { "verification": "verified" }
@@ -83,8 +83,9 @@ GET http://localhost:3000/appointments?name=wanzu
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYiIsInJvbGUiOiJzZWN1cml0eSIsImlhdCI6MTY4NzY4MzY5M30.nQT6xkT3gUoFpxjSEYTaX0Bti_sX1TKaXZuuFvOvSi4
 
 //optional
-
+###
 POST http://localhost:3000/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhZGgiLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE2ODc3MDc4NTR9.7SH9XF5k48Zp4w0OQONs6nA0Enf0Rl1FMAb0DZD2fsU
 Content-Type: application/json
 
 {

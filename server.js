@@ -28,7 +28,86 @@ mongodb.MongoClient.connect(mongoURL, { useUnifiedTopology: true })
     const securityDB = db.collection(securityCollection);
     const appointmentDB = db.collection(appointmentCollection);
 
-    // Staff login
+// Middleware for authentication and authorization
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).send('Missing token');
+  }
+
+  jwt.verify(token, secretKey, (err, user) => {
+    if (err) {
+      return res.status(403).send('Invalid or expired token');
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// Register staff
+app.post('/register-staff', authenticateToken, async (req, res) => {
+  const { role } = req.user;
+
+  if (role !== 'security') {
+    return res.status(403).send('Invalid or unauthorized token');
+  }
+
+  const { username, password } = req.body;
+
+  const existingStaff = await staffDB.findOne({ username });
+
+  if (existingStaff) {
+    return res.status(409).send('Username already exists');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const staff = {
+    username,
+    password: hashedPassword,
+  };
+
+  staffDB
+    .insertOne(staff)
+    .then(() => {
+      res.status(200).send('Staff registered successfully');
+    })
+    .catch((error) => {
+      res.status(500).send('Error registering staff');
+    });
+});
+
+
+// Register security
+app.post('/register-security', async (req, res) => {
+  const { username, password } = req.body;
+
+  const existingSecurity = await securityDB.findOne({ username });
+
+  if (existingSecurity) {
+    return res.status(409).send('Username already exists');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const security = {
+    username,
+    password: hashedPassword,
+  };
+
+  securityDB
+    .insertOne(security)
+    .then(() => {
+      res.status(200).send('Security registered successfully');
+    })
+    .catch((error) => {
+      res.status(500).send('Error registering security');
+    });
+});
+
+
     // Staff login
 app.post('/login-staff', async (req, res) => {
   const { username, password } = req.body;
@@ -84,25 +163,6 @@ app.post('/login-staff', async (req, res) => {
         });
     });
 
-    // Middleware for authentication and authorization
-    const authenticateToken = (req, res, next) => {
-      const authHeader = req.headers['authorization'];
-      const token = authHeader && authHeader.split(' ')[1];
-    
-      if (!token) {
-        return res.status(401).send('Missing token');
-      }
-    
-      jwt.verify(token, secretKey, (err, user) => {
-        if (err) {
-          return res.status(403).send('Invalid or expired token');
-        }
-        req.user = user;
-        next();
-      });
-    };
-    
-
     // Create appointment
     app.post('/appointments', async (req, res) => {
       const {
@@ -138,24 +198,25 @@ app.post('/login-staff', async (req, res) => {
     });
 
     // Get staff's appointments
-    app.get('/staff-appointments/:username', authenticateToken, async (req, res) => {
-      const { username } = req.params;
-      const { role } = req.user;
-    
-      if (role !== 'staff') {
-        return res.status(403).send('Invalid or unauthorized token');
-      }
-    
-      appointmentDB
-        .find({ 'staff.username': username })
-        .toArray()
-        .then((appointments) => {
-          res.json(appointments);
-        })
-        .catch((error) => {
-          res.status(500).send('Error retrieving appointments');
-        });
+app.get('/staff-appointments/:username', authenticateToken, async (req, res) => {
+  const { username } = req.params;
+  const { role, username: authenticatedUsername } = req.user;
+
+  if (role !== 'staff' || username !== authenticatedUsername) {
+    return res.status(403).send('Invalid or unauthorized token');
+  }
+
+  appointmentDB
+    .find({ 'staff.username': username })
+    .toArray()
+    .then((appointments) => {
+      res.json(appointments);
+    })
+    .catch((error) => {
+      res.status(500).send('Error retrieving appointments');
     });
+});
+
 
 // Update appointment verification by visitor name
 app.put('/appointments/:name', authenticateToken, async (req, res) => {
