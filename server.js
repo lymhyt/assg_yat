@@ -197,12 +197,16 @@ app.post('/login-staff', async (req, res) => {
         });
     });
 
-    // Get staff's appointments
+// Get staff's appointments
 app.get('/staff-appointments/:username', authenticateToken, async (req, res) => {
   const { username } = req.params;
   const { role, username: authenticatedUsername } = req.user;
 
-  if (role !== 'staff' || username !== authenticatedUsername) {
+  if (role !== 'staff') {
+    return res.status(403).send('Invalid or unauthorized token');
+  }
+
+  if (username !== authenticatedUsername) {
     return res.status(403).send('Invalid or unauthorized token');
   }
 
@@ -217,19 +221,26 @@ app.get('/staff-appointments/:username', authenticateToken, async (req, res) => 
     });
 });
 
-
 // Update appointment verification by visitor name
 app.put('/appointments/:name', authenticateToken, async (req, res) => {
   const { name } = req.params;
   const { verification } = req.body;
-  const { role } = req.user;
+  const { role, username: authenticatedUsername } = req.user;
 
   if (role !== 'staff') {
     return res.status(403).send('Invalid or unauthorized token');
   }
 
+  // Find the appointment by name and staff username
+  const appointment = await appointmentDB.findOne({ name, 'staff.username': authenticatedUsername });
+
+  if (!appointment) {
+    return res.status(404).send('Appointment not found');
+  }
+
+  // Update the verification only if the staff member matches the creator
   appointmentDB
-    .updateOne({ name }, { $set: { verification } })
+    .updateOne({ name, 'staff.username': authenticatedUsername }, { $set: { verification } })
     .then(() => {
       res.status(200).send('Appointment verification updated successfully');
     })
@@ -237,6 +248,7 @@ app.put('/appointments/:name', authenticateToken, async (req, res) => {
       res.status(500).send('Error updating appointment verification');
     });
 });
+
 
     // Delete appointment
     app.delete('/appointments/:name', authenticateToken, async (req, res) => {
